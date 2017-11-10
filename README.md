@@ -8,7 +8,7 @@ Create flexible REST endpoints and controllers from [Sequelize](http://www.seque
 
 ### Installation
 
-```npm install finale```
+```npm install finale-rest```
 
 ### Getting Started
 ```javascript

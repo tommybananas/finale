@@ -138,7 +138,7 @@ describe('Resource(basic)', function() {
         model: test.models.Person,
         endpoints: ['/modelwithoutinclude', '/modelwithoutinclude/:id']
       });
-
+      
       expect(resourceWithoutInclude.include).to.eql([]);
     });
 

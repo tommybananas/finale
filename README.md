@@ -2,7 +2,7 @@
 
 Note: This repository aims to be a Sequelize 4 compatible version of [Epilogue](https://github.com/dchester/epilogue).
 
-# Epilogue
+# SequelizeREST
 
 Create flexible REST endpoints and controllers from [Sequelize](http://www.sequelizejs.com/) models in your [Express](http://expressjs.com/) or [Restify](https://github.com/restify/node-restify) app.
 

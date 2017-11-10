@@ -102,7 +102,9 @@ describe('Resource(hooks)', function() {
         test.models.User.hook(hook, function(instance, options, callback) {
           if (test.hooks[verb][hook])
             throw new Error(verb + "#" + hook);
-          callback();
+          return new Promise(function(resolve, reject){
+            resolve();
+          });
         });
       });
     });

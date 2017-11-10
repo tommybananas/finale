@@ -414,7 +414,7 @@ var userResource = finale.resource({
 
 #### initialize()
 
-Set defaults and give epilouge a reference to your express app.  Send the following parameters:
+Set defaults and give finale a reference to your express app.  Send the following parameters:
 
 > ###### app
 >

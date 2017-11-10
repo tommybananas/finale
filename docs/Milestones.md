@@ -94,7 +94,7 @@ users.list.fetch.before(function(req, res, context) {
 });
 
 // example for 2 and 4
-var ForbiddenError = require('finale').Errors.ForbiddenError;
+var ForbiddenError = require('finale-rest').Errors.ForbiddenError;
 
 users.list.fetch.before(function(req, res, context) {
 	return checkLoggedIn(function(loggedIn) {

@@ -13,7 +13,7 @@ Create flexible REST endpoints and controllers from [Sequelize](http://www.seque
 ### Getting Started
 ```javascript
 var Sequelize = require('sequelize'),
-    finale = require('finale'),
+    finale = require('finale-rest'),
     http = require('http');
 
 // Define your models
@@ -86,7 +86,7 @@ Controller actions in turn have hooks for setting and overriding behavior at eac
 We have these milestones to work with: `start`, `auth`, `fetch`, `data`, `write`, `send`, and `complete`.
 
 ```javascript
-var ForbiddenError = require('finale').Errors.ForbiddenError;
+var ForbiddenError = require('finale-rest').Errors.ForbiddenError;
 
 // disallow deletes on users
 userResource.delete.auth(function(req, res, context) {
@@ -144,7 +144,7 @@ module.exports = {
 };
 
 // my-app.js
-var finale = require('finale'),
+var finale = require('finale-rest'),
     restMiddleware = require('my-middleware');
 
 finale.initialize({
@@ -179,7 +179,7 @@ module.exports = {
 To show an error and halt execution of milestone functions you can throw an error:
 
 ```javascript
-var ForbiddenError = require('finale').Errors.ForbiddenError;
+var ForbiddenError = require('finale-rest').Errors.ForbiddenError;
 
 before: function(req, res, context) {
     return authenticate.then(function(authed) {

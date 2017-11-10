@@ -2,7 +2,7 @@
 
 Note: This project aims to be a Sequelize 4 compatible version of [Epilogue](https://github.com/dchester/epilogue).
 
-# SequelizeREST
+# Finale
 
 Create flexible REST endpoints and controllers from [Sequelize](http://www.sequelizejs.com/) models in your [Express](http://expressjs.com/) or [Restify](https://github.com/restify/node-restify) app.
 
@@ -10,7 +10,7 @@ Create flexible REST endpoints and controllers from [Sequelize](http://www.seque
 ### Getting Started
 ```javascript
 var Sequelize = require('sequelize'),
-    sequelizeRest = require('sequelize-rest'),
+    finale = require('finale'),
     http = require('http');
 
 // Define your models
@@ -38,14 +38,14 @@ if (process.env.USE_RESTIFY) {
   server = http.createServer(app);
 }
 
-// Initialize sequelizeRest
-sequelizeRest.initialize({
+// Initialize finale
+finale.initialize({
   app: app,
   sequelize: database
 });
 
 // Create REST resource
-var userResource = sequelizeRest.resource({
+var userResource = finale.resource({
   model: User,
   endpoints: ['/users', '/users/:id']
 });
@@ -83,7 +83,7 @@ Controller actions in turn have hooks for setting and overriding behavior at eac
 We have these milestones to work with: `start`, `auth`, `fetch`, `data`, `write`, `send`, and `complete`.
 
 ```javascript
-var ForbiddenError = require('sequelize-rest').Errors.ForbiddenError;
+var ForbiddenError = require('finale').Errors.ForbiddenError;
 
 // disallow deletes on users
 userResource.delete.auth(function(req, res, context) {
@@ -141,15 +141,15 @@ module.exports = {
 };
 
 // my-app.js
-var sequelizeRest = require('sequelize-rest'),
+var finale = require('finale'),
     restMiddleware = require('my-middleware');
 
-sequelizeRest.initialize({
+finale.initialize({
     app: app,
     sequelize: sequelize
 });
 
-var userResource = sequelizeRest.resource({
+var userResource = finale.resource({
     model: User,
     endpoints: ['/users', '/users/:id']
 });
@@ -157,7 +157,7 @@ var userResource = sequelizeRest.resource({
 userResource.use(restMiddleware);
 ```
 
-SequelizeREST middleware also supports bundling in extra resource configuration by specifying
+Finale middleware also supports bundling in extra resource configuration by specifying
 an "extraConfiguration" member of the middleware like so:
 
 ```javascript
@@ -176,7 +176,7 @@ module.exports = {
 To show an error and halt execution of milestone functions you can throw an error:
 
 ```javascript
-var ForbiddenError = require('sequelize-rest').Errors.ForbiddenError;
+var ForbiddenError = require('finale').Errors.ForbiddenError;
 
 before: function(req, res, context) {
     return authenticate.then(function(authed) {
@@ -266,7 +266,7 @@ Content-Type: application/json
 Search behavior can be customized to change the parameter used for searching, as well as which attributes are included in the search, like so:
 
 ```javascript
-var userResource = sequelizeRest.resource({
+var userResource = finale.resource({
     model: User,
     endpoints: ['/users', '/users/:id'],
     search: {
@@ -285,7 +285,7 @@ $ curl http://localhost/users?searchOnlyUsernames=james
 By default, the substring search is performed using a ```{field} LIKE '%{query}%'``` pattern. However, this behavior can be customized by specifying a search operator. Valid operators include: `$like` (default), `$ilike`/`$iLike`, `$notLike`, `$notILike`, `$ne`, `$eq`, `$not`, `$gte`, `$gt`, `$lte`, `$lt`. All "\*like" operators can only be used against Sequelize.STRING or Sequelize.TEXT fields. For instance:
 
 ```javascript
-var userResource = sequelizeRest.resource({
+var userResource = finale.resource({
     model: User,
     endpoints: ['/users', '/users/:id'],
     search: {
@@ -298,7 +298,7 @@ var userResource = sequelizeRest.resource({
 When querying against a Sequelize.BOOLEAN field, you'll need to use the `$eq` operator. You can also add multiple search parameters by passing the search key an array of objects:
 
 ```javascript
-var userResource = sequelizeRest.resource({
+var userResource = finale.resource({
     model: User,
     endpoints: ['/users', '/users/:id'],
     search: [
@@ -332,7 +332,7 @@ Content-Type: application/json
 Sort behavior can be customized to change the parameter used for sorting, as well as which attributes are allowed to be used for sorting like so:
 
 ```javascript
-var userResource = sequelizeRest.resource({
+var userResource = finale.resource({
     model: User,
     endpoints: ['/users', '/users/:id'],
     sort: {
@@ -351,7 +351,7 @@ $ curl http://localhost/users?orderby=username
 Default sort criteria can be defined with the `default` attribute. The expected format for default sort criteria is exactly the same as if it was proceeding the `sort` parameter in the URL.
 
 ```javascript
-var userResource = sequelizeRest.resource({
+var userResource = finale.resource({
     model: User,
     endpoints: ['/users', '/users/:id'],
     sort: {
@@ -403,14 +403,14 @@ Content-Range: items 200-299/3230
 Alternatively, you can specify that pagination is disabled for a given resource by passing false to the pagination property like so:
 
 ```javascript
-var userResource = sequelizeRest.resource({
+var userResource = finale.resource({
     model: User,
     endpoints: ['/users', '/users/:id'],
     pagination: false
 });
 ```
 
-## SequelizeREST API
+## Finale API
 
 #### initialize()
 
@@ -452,10 +452,10 @@ Create a resource and CRUD actions given a Sequelize model and endpoints.  Accep
 ### Milestones & Context
 
 Check out the [Milestone docs](/docs/Milestones.md) for information on lifecycle
-hooks that can be used with sequelizeRest resources, and how to run custom code at
+hooks that can be used with finale resources, and how to run custom code at
 various points during a request.
 
-## Protecting SequelizeREST REST Endpoints
+## Protecting Finale REST Endpoints
 
 To protect an endpoint, you must use [milestones](/docs/Milestones.md).
 
@@ -465,7 +465,7 @@ the appropriate milestone hooks.
 
 Below is an example of how to do this with standard Express middleware, which is
 commonly used to protect resources.  Note that the callback functions required by
-SequelizeREST milestones look similar to express middleware, but the third argument (`context`)
+Finale milestones look similar to express middleware, but the third argument (`context`)
 is different.
 
 Suppose you have this resource:
@@ -502,8 +502,8 @@ userResource.all.auth(function (req, res, context) {
 In this code, note that `userResource.all.auth` is simply reusing the express middleware
 to do whatever authorization checking your code requires.  We are passing a custom
 `done` function to the middleware, which resolves a promise as either `context.stop`
-or `context.continue`, indicating to sequelizeRest whether or not to proceed.  Note that
-in the case where the transaction isn't authorized, sequelizeRest won't proceed, so it
+or `context.continue`, indicating to finale whether or not to proceed.  Note that
+in the case where the transaction isn't authorized, finale won't proceed, so it
 is your responsibility to send a response back to the client.
 
 ### Further Information on Protecting Endpoints

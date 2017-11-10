@@ -8,7 +8,9 @@ This project aims to be a Sequelize 4 compatible version of [Epilogue](https://g
 
 ### Installation
 
-```npm install finale-rest```
+```javascript
+npm install finale-rest
+```
 
 ### Getting Started
 ```javascript
@@ -64,6 +66,20 @@ database
       console.log('listening at http://%s:%s', host, port);
     });
   });
+```
+
+### Migrate from Epilogue
+
+Finale is bulit to be a drop-in replacement for Epilogue that supports Sequelize 4.x.x
+
+```javascript
+const epilogue = require('epilogue')
+epilogue.initialize(...)
+
+// change to
+
+const finale = require('finale-rest')
+finale.initialize(...)
 ```
 
 ### Controllers and endpoints

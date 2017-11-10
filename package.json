@@ -7,7 +7,10 @@
     {
       "name": "Matt Broadstone",
       "email": "mbroadst@gmail.com"
-    }
+    },
+    {
+      "name": "Tom Juszczyk",
+      "email": "tomkj4@gmail.com"
   ],
   "main": "lib/",
   "scripts": {
@@ -18,10 +21,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dchester/epilogue.git"
+    "url": "https://github.com/tommybananas/epilogue.git"
   },
   "bugs": {
-    "url": "https://github.com/dchester/epilogue/issues"
+    "url": "https://github.com/tommybananas/epilogue/issues"
   },
   "license": "MIT",
   "keywords": [

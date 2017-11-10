@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/dchester/epilogue.svg?branch=master)](https://travis-ci.org/dchester/epilogue) [![Dependency Status](https://david-dm.org/dchester/epilogue.svg)](https://david-dm.org/dchester/epilogue)
 
-Note: This repository aims to be a Sequelize 4 compatible version of epilogue. Pull requests welcome.
+Note: This project aims to be a Sequelize 4 compatible version of [epilogue](https://github.com/dchester/epilogue)
 
 # Epilogue
 

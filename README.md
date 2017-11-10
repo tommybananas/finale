@@ -157,7 +157,7 @@ var userResource = sequelizeRest.resource({
 userResource.use(restMiddleware);
 ```
 
-Epilogue middleware also supports bundling in extra resource configuration by specifying
+SequelizeREST middleware also supports bundling in extra resource configuration by specifying
 an "extraConfiguration" member of the middleware like so:
 
 ```javascript
@@ -410,7 +410,7 @@ var userResource = sequelizeRest.resource({
 });
 ```
 
-## Epilogue API
+## SequelizeREST API
 
 #### initialize()
 
@@ -455,7 +455,7 @@ Check out the [Milestone docs](/docs/Milestones.md) for information on lifecycle
 hooks that can be used with sequelizeRest resources, and how to run custom code at
 various points during a request.
 
-## Protecting Epilogue REST Endpoints
+## Protecting SequelizeREST REST Endpoints
 
 To protect an endpoint, you must use [milestones](/docs/Milestones.md).
 
@@ -465,7 +465,7 @@ the appropriate milestone hooks.
 
 Below is an example of how to do this with standard Express middleware, which is
 commonly used to protect resources.  Note that the callback functions required by
-Epilogue milestones look similar to express middleware, but the third argument (`context`)
+SequelizeREST milestones look similar to express middleware, but the third argument (`context`)
 is different.
 
 Suppose you have this resource:

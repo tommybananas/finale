@@ -1,10 +1,10 @@
 <!---[![Build Status](https://travis-ci.org/dchester/epilogue.svg?branch=master)](https://travis-ci.org/dchester/epilogue) [![Dependency Status](https://david-dm.org/dchester/epilogue.svg)](https://david-dm.org/dchester/epilogue)--->
 
-This project aims to be a Sequelize 4 compatible version of [Epilogue](https://github.com/dchester/epilogue).
-
 # Finale
 
 Create flexible REST endpoints and controllers from [Sequelize](http://www.sequelizejs.com/) models in your [Express](http://expressjs.com/) or [Restify](https://github.com/restify/node-restify) app.
+
+This project aims to be a Sequelize 4 compatible version of [Epilogue](https://github.com/dchester/epilogue).
 
 ### Installation
 

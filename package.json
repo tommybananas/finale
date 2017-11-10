@@ -1,5 +1,5 @@
 {
-  "name": "finale",
+  "name": "finale-rest",
   "description": "Create REST resources and controllers with Sequelize and Express or Restify",
   "version": "0.1.0",
   "author": "Tom Juszczyk <tomkj4@gmail.com>",

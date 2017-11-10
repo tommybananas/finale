@@ -94,7 +94,7 @@ users.list.fetch.before(function(req, res, context) {
 });
 
 // example for 2 and 4
-var ForbiddenError = require('epilogue').Errors.ForbiddenError;
+var ForbiddenError = require('finale').Errors.ForbiddenError;
 
 users.list.fetch.before(function(req, res, context) {
 	return checkLoggedIn(function(loggedIn) {
@@ -140,7 +140,7 @@ should also set the response `res.status(200).json({})`
 
 This should be called when throwing an error won't work. If you are returning a promise or working sync then throwing
 an error will be better. If more than one parameter is passed to `context.error` then this function will assume the
-syntax `context.error(status, message, [errors], [cause])` and will create a new EpilogueError out of them and will use
+syntax `context.error(status, message, [errors], [cause])` and will create a new FinaleError out of them and will use
 that instead.
 
 # Errors
@@ -154,21 +154,21 @@ Throwing an error within a milestone function will cause the milestones to stop 
 }
 ```
 
-To make use of this you must use an error that extends EpilogueError. Any error thrown that is not an instance of
-EpilogueError will be shown as an Internal Server Error with it's errors array set to the error message.
+To make use of this you must use an error that extends FinaleError. Any error thrown that is not an instance of
+FinaleError will be shown as an Internal Server Error with it's errors array set to the error message.
 
 In situations where throwing an error is not possible you can use `context.error(err)` with the error object or
-alternatively call `context.error(status, message, [errors], [cause])` for it to build an EpilogueError for you with the
+alternatively call `context.error(status, message, [errors], [cause])` for it to build an FinaleError for you with the
 supplied parameters
 
-The following errors are provided on epilogue.Errors:
+The following errors are provided on finale.Errors:
 
-## EpilogueError(statusCode, message, errors, cause)
+## FinaleError(statusCode, message, errors, cause)
 
 This is the parent class you can extend to make your own errors
 
 `statusCode` = the HTTP status code to return, defaults to 500
-`message` = the error message to show in the message field, defaults to 'EpilogueError'
+`message` = the error message to show in the message field, defaults to 'FinaleError'
 `errors` = an array of error strings to show in the message, defaults to []
 `cause` = the original error that caused this error, defaults to undefined (no cause)
 
@@ -209,7 +209,7 @@ For example:
   }
 ```
 
-The error object passed will be an EpilogueError. If the error is wrapping another error (for example a ValidationError
+The error object passed will be an FinaleError. If the error is wrapping another error (for example a ValidationError
 from Sequelize) the original error can be found at `controllers.error.cause`
 
 ```javascript
@@ -235,5 +235,5 @@ The default implementation is to do the following:
 ```
 
 All Sequelize ValidationError objects are wrapped in a BadRequestError and are accessed on error.cause.
-Any EpilogueError object are passed as-is and any other errors are wrapped in an EpilogueError and can be accessed on
+Any FinaleError object are passed as-is and any other errors are wrapped in an FinaleError and can be accessed on
 error.cause

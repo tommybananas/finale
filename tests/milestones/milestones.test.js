@@ -8,7 +8,7 @@ var Promise = require('bluebird'),
     test = require('../support'),
     errors = require('../../lib/Errors'),
     RequestCompleted = errors.RequestCompleted,
-    EpilogueError = errors.EpilogueError;
+    FinaleError = errors.FinaleError;
 
 describe('Milestones', function() {
   before(function() {
@@ -284,7 +284,7 @@ describe('Milestones', function() {
           }
         }
       };
-      error = new EpilogueError(420, 'test error', ['test', 'error']);
+      error = new FinaleError(420, 'test error', ['test', 'error']);
     });
 
     function checkErrored(done) {

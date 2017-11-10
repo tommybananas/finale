@@ -1,16 +1,16 @@
 {
-  "name": "epilogue",
+  "name": "finale",
   "description": "Create REST resources and controllers with Sequelize and Express or Restify",
-  "version": "0.7.1",
-  "author": "David Chester <dchester@shutterstock.com>",
+  "version": "0.1.0",
+  "author": "Tom Juszczyk <tomkj4@gmail.com>",
   "contributors": [
     {
       "name": "Matt Broadstone",
       "email": "mbroadst@gmail.com"
     },
     {
-      "name": "Tom Juszczyk",
-      "email": "tomkj4@gmail.com"
+      "name": "David Chester",
+      "email": "dchester@shutterstock.com"
     }
   ],
   "main": "lib/",
@@ -22,10 +22,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tommybananas/epilogue.git"
+    "url": "https://github.com/tommybananas/finale.git"
   },
   "bugs": {
-    "url": "https://github.com/tommybananas/epilogue/issues"
+    "url": "https://github.com/tommybananas/finale/issues"
   },
   "license": "MIT",
   "keywords": [
@@ -33,7 +33,7 @@
     "sequelizejs",
     "rest",
     "restful",
-    "epilogue",
+    "finale",
     "json",
     "api"
   ],

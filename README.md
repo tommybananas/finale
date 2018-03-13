@@ -70,7 +70,7 @@ database
 
 ### Migrate from Epilogue
 
-Finale is bulit to be a drop-in replacement for Epilogue that supports Sequelize 4.x.x
+Finale is built to be a drop-in replacement for Epilogue that supports Sequelize 4.x.x
 
 ```javascript
 const epilogue = require('epilogue')

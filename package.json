@@ -53,5 +53,8 @@
     "restify": "^4.0.3",
     "sequelize": "^4.15.0",
     "sqlite3": "^3.0.9"
-  }
+  },
+  "files": [
+    "lib"
+  ]
 }

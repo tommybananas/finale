@@ -346,6 +346,31 @@ describe('Milestones', function() {
       test.userResource.use(ErrorMiddleware);
       checkErrored(done);
     });
+
+    if (!process.env.USE_RESTIFY) {
+      it('should pass unknown errors to express', function (done) {
+        // Throw an error that is not a FinaleError.
+        ErrorMiddleware.create.write.before = function (req, res, context) {
+          throw new Error('Something unexpected happened.');
+        };
+        test.userResource.use(ErrorMiddleware);
+
+        // Register an additional route handler in Express.
+        let appCalled = false;
+        test.app.use(function (req, res, err, next) {
+          appCalled = true;
+          next();
+        });
+
+        request.post({
+          url: test.baseUrl + '/users',
+          json: { username: 'jamez', email: 'jamez@gmail.com' }
+        }, function () {
+          expect(appCalled).to.be.true;
+          done();
+        });
+      });
+    }
   });
 
   describe('Errors', function() {

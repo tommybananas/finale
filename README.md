@@ -432,21 +432,21 @@ var userResource = finale.resource({
 
 ### Deep vs Shallow Payloads
 
-For list and read queries, you can set a `shallow` boolean on the context to indicate if you want it to include association child objects or not.  
+By default, associations are included in read and list payloads.  For list and read queries, you can set a `shallow` boolean on the context to indicate if you want it to include association child objects or not.  
 ```javascript
-	userResource["list"].fetch.before(function(req:Request,res:Response,context:any) { 
-				context.shallow = true;
-				return context.continue;
-			});
+userResource["list"].fetch.before(function(req:Request,res:Response,context:any) { 
+    context.shallow = true;
+    return context.continue;
+});
 
 ```
 
-For finer-grain control over which children are included on a per-query basis, you can set context.shallow to true, and also leverage a `children` query parameter with a pipe-delimited list of associated children to include.  `children` only works if `shallow` is set to true.  The names used in the `children` query parameter are the `as` association names when setting up your sequelize models, or the default created by sequelize.
+For finer-grain control over which children are included on a per-query basis, you can set `context.shallow` to true, and also leverage a `children` query parameter with a pipe-delimited list of associated children to include.  `children` only works if `shallow` is set to true.  The names used in the `children` query parameter are the `as` association names when setting up your sequelize models, or the default created by sequelize.
 
 ```javascript
-   UserModel.belongsToMany(UserGroupModel), { through: UserGroupRelModel,foreignKey: "user_id" });
-   UserModel.belongsTo(OrganizationModel), { as: "PrimaryOrganization", foreignKey: "primary_organization_id" });
-   UserModel.belongsToMany(FooModel), { through: FooRelModel,foreignKey: "user_id" });
+UserModel.belongsToMany(UserGroupModel), { through: UserGroupRelModel,foreignKey: "user_id" });
+UserModel.belongsTo(OrganizationModel), { as: "PrimaryOrganization", foreignKey: "primary_organization_id" });
+UserModel.belongsToMany(FooModel), { through: FooRelModel,foreignKey: "user_id" });
 ...
 GET /user/?children=UserGroups|PrimaryOrganization
 ```

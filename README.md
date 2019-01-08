@@ -550,6 +550,28 @@ or `context.continue`, indicating to finale whether or not to proceed.  Note tha
 in the case where the transaction isn't authorized, finale won't proceed, so it
 is your responsibility to send a response back to the client.
 
+### Protecting sub-resources
+
+When models have assocations between them, to achieve the nested endpoints a la `/user/1/UserGroups`, 
+finale creates sub-resources.  Remember to set authorizations on those sub-resources as well.  To get the sub-resources
+for a particular resource, you can use the string array `subResourceNames` attribute on the resource.  Each name is also
+the name of an attribute on the resource.
+
+```javascript
+userResource.all.auth(function (req, res, context) {
+...
+});
+
+for(sub_resource_name in userResource.subResourceNames) {
+    userResource[sub_resource_name].all.auth(function (req, res, context) {
+      ...
+    });
+}
+```
+
+
+
+
 ### Further Information on Protecting Endpoints
 
 The milestone documentation provides many other hooks for finer-grained operations,

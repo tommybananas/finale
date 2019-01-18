@@ -579,7 +579,7 @@ describe('Milestones', function() {
       });
     });
 
-    it('should respect modified criteria before fetch (aliasing)', function(done) {
+    it('should respect modified criteria before fetch (aliasing)', function() {
       test.userResource.read.fetch.before(function(req, res, context) {
         if (req.params.id === 'me') {
           context.criteria.id = 3;
@@ -599,7 +599,6 @@ describe('Milestones', function() {
           delete record.id;
           expect(response.statusCode).to.equal(200);
           expect(record).to.eql({ username: 'harry', email: 'harry@gmail.com' });
-          done();
         });
       });
     });

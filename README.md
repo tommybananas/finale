@@ -4,7 +4,7 @@
 
 Create flexible REST endpoints and controllers from [Sequelize](http://www.sequelizejs.com/) models in your [Express](http://expressjs.com/) or [Restify](https://github.com/restify/node-restify) app.
 
-This project aims to be a Sequelize 4.x compatible version of [Epilogue](https://github.com/dchester/epilogue).
+This project aims to be a Sequelize 4.x and 5.x compatible version of [Epilogue](https://github.com/dchester/epilogue).
 
 ### Installation
 

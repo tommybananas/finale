@@ -38,7 +38,8 @@ describe('Finale', function() {
     var db = new Sequelize('main', null, null, {
       dialect: 'sqlite',
       storage: ':memory:',
-      logging: (process.env.SEQ_LOG ? console.log : false)
+      logging: (process.env.SEQ_LOG ? console.log : false),
+      operatorsAliases: false
     });
 
     finale.initialize({

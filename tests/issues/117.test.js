@@ -102,7 +102,6 @@ describe('issue 117 - use _defaults to extend array on hooks', function () {
     }, function (error, response, body) {
       expect(response.statusCode).to.equal(200);
       var result = _.isObject(body) ? body : JSON.parse(body);
-      console.log(result);
       expect(result).to.eql({
         id: 1,
         name: 'My shiny new MPCNC',

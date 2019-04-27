@@ -99,7 +99,7 @@ describe('Resource(hooks)', function() {
 
     Object.keys(test.hooks).forEach(function(verb) {
       Object.keys(test.hooks[verb]).forEach(function(hook) {
-        test.models.User.hook(hook, function(instance, options) {
+        test.models.User[hook](function(instance, options) {
           if (test.hooks[verb][hook])
             throw new Error(verb + "#" + hook);
           return new Promise(function(resolve, reject){

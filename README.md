@@ -228,6 +228,12 @@ Content-Type: application/json
 ]
 ```
 
+If your query specifies associations to be included – whether via a model scope (see below), manipulation of Finale's Context object in a custom Milestone handler, or simply by default in your Finale resource definition – your query parameters can reference fields on the joined models, e.g.
+
+```bash
+$ curl http://localhost/users?group.type=vip
+```
+
 ### Filtering using scope
 
 Use `scope` to add additional filtering (More about scopes in sequelize - [http://docs.sequelizejs.com/en/latest/docs/scopes/](http://docs.sequelizejs.com/en/latest/docs/scopes/)).

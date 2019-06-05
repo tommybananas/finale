@@ -29,10 +29,22 @@ var User = database.define('User', {
 var server, app;
 if (process.env.USE_RESTIFY) {
   var restify = require('restify');
-
+  var corsMiddleware = require('restify-cors-middleware');
+  
   app = server = restify.createServer()
-  app.use(restify.queryParser());
-  app.use(restify.bodyParser());
+  var cors = corsMiddleware({
+    preflightMaxAge: 5, // Optional
+    origins: ['*'], // Should whitelist actual domains in production
+    allowHeaders: ['Authorization', 'API-Token', 'Content-Range'], //Content-range has size info on lists
+    exposeHeaders: ['Authorization', 'API-Token-Expiry', 'Content-Range']
+  })
+
+  server.pre(cors.preflight)
+  server.use(cors.actual)
+
+  server.use(restify.plugins.queryParser()); //{mapParams: true}
+  server.use(restify.plugins.bodyParser());  //{mapParams: true, mapFiles: true}
+  server.use(restify.plugins.acceptParser(server.acceptable));
 } else {
   var express = require('express'),
       bodyParser = require('body-parser');
@@ -307,27 +319,27 @@ This would restrict substring searches to the ```username``` attribute of the Us
 $ curl http://localhost/users?searchOnlyUsernames=james
 ```
 
-By default, the substring search is performed using a ```{field} LIKE '%{query}%'``` pattern. However, this behavior can be customized by specifying a search operator. Valid operators include: `$like` (default), `$ilike`/`$iLike`, `$notLike`, `$notILike`, `$ne`, `$eq`, `$not`, `$gte`, `$gt`, `$lte`, `$lt`. All "\*like" operators can only be used against Sequelize.STRING or Sequelize.TEXT fields. For instance:
+By default, the substring search is performed using a ```{field} LIKE '%{query}%'``` pattern. However, this behavior can be customized by specifying a search operator. Valid operators include: `Op.like` (default), `Op.iLike`, `Op.notLike`, `Op.notILike`, `Op.ne`, `Op.eq`, `Op.not`, `Op.gte`, `Op.gt`, `Op.lte`, `Op.lt`. All "\*like" operators can only be used against Sequelize.STRING or Sequelize.TEXT fields. For instance:
 
 ```javascript
 var userResource = finale.resource({
     model: User,
     endpoints: ['/users', '/users/:id'],
     search: {
-      operator: '$gt',
+      operator: Sequelize.Op.gt,
       attributes: [ 'age' ]
     }
 });
 ```
 
-When querying against a Sequelize.BOOLEAN field, you'll need to use the `$eq` operator. You can also add multiple search parameters by passing the search key an array of objects:
+When querying against a Sequelize.BOOLEAN field, you'll need to use the `Op.eq` operator. You can also add multiple search parameters by passing the search key an array of objects:
 
 ```javascript
 var userResource = finale.resource({
     model: User,
     endpoints: ['/users', '/users/:id'],
     search: [
-      {operator: '$eq', param: 'emailVerified', attributes: [ 'email_verified' ]},
+      {operator: Sequelize.Op.eq, param: 'emailVerified', attributes: [ 'email_verified' ]},
       {param: 'searchOnlyUsernames', attributes: [ 'username' ]}
     ] 
 });

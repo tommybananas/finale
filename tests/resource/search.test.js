@@ -125,7 +125,8 @@ describe('Resource(search)', function() {
       name: 'search with custom search operator',
       config: {
         search: {
-          operator: '$eq'
+  //        operator: '$eq'
+            operator: test.Sequelize.Op.eq
         }
       },
       query: 'william',
@@ -135,7 +136,8 @@ describe('Resource(search)', function() {
       name: 'search with custom search operator and attributes',
       config: {
         search: {
-          operator: '$notLike',
+//          operator: '$notLike',
+          operator: test.Sequelize.Op.notLike,
           attributes: [ 'username' ]
         }
       },

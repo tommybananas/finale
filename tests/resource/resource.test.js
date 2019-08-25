@@ -27,7 +27,7 @@ describe('Resource(basic)', function() {
       scopes: {
         userNameStartsWithA: {
           where: {
-            username: { $like: 'a%' }
+            username: { [test.Sequelize.Op.like]: 'a%' }
           }
         }
       },

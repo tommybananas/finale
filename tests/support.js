@@ -55,6 +55,7 @@ var TestFixture = {
 
 before(function() {
   TestFixture.db = new Sequelize('main', null, null, {
+    define: { underscored: true},
     dialect: 'sqlite',
     storage: ':memory:',
     logging: (process.env.SEQ_LOG ? console.log : false)

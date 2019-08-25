@@ -1,0 +1,14 @@
+{
+    "dependencies": {
+      "2.10.2": {
+        "version": "2.10.2",
+        "from": "jshint@2.10.2",
+        "dependencies": {
+          "lodash": {
+            "version": "4.17.15",
+            "from": "lodash@~4.17.11"
+          }
+        }
+      }
+    }
+  }

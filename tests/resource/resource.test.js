@@ -27,7 +27,7 @@ describe('Resource(basic)', function() {
       scopes: {
         userNameStartsWithA: {
           where: {
-            username: { $like: 'a%' }
+            username: { [test.Sequelize.Op.like]: 'a%' }
           }
         }
       },
@@ -99,7 +99,7 @@ describe('Resource(basic)', function() {
       try {
         var resource = new rest.Resource(); // jshint ignore:line
       } catch (exception) {
-        expect(exception).to.eql(new Error('resource needs a model'));
+        expect(exception.message).to.eql('resource needs a model');
         done();
       }
 

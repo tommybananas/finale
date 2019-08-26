@@ -421,7 +421,7 @@ describe('Associations(BelongsTo)', function() {
         expectedId = person.id;
         return person.setHobbies([hobby0, hobby1]);
       }).then(function(hobbies) {
-        return test.models.Person.find({
+        return test.models.Person.findOne({
           where: { id: expectedId },
           include: [
             { model: test.models.Address, as: 'addy' },

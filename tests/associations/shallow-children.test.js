@@ -237,7 +237,7 @@ describe('ShallowAndChildren', function() {
       });
 
       request.get({
-        url: test.baseUrl + '/users/'
+        url: test.baseUrl + '/users'
       }, function(error, response, body) {
         expect(response.statusCode).to.equal(200);
         var result = _.isObject(body) ? body : JSON.parse(body);
@@ -257,7 +257,7 @@ describe('ShallowAndChildren', function() {
       });
 
       request.get({
-        url: test.baseUrl + '/users/?children=tasks'
+        url: test.baseUrl + '/users?children=tasks'
       }, function(error, response, body) {
         expect(response.statusCode).to.equal(200);
         var result = _.isObject(body) ? body : JSON.parse(body);
@@ -284,7 +284,7 @@ describe('ShallowAndChildren', function() {
       });
 
       request.get({
-        url: test.baseUrl + '/users/?children=tasks|app'
+        url: test.baseUrl + '/users?children=tasks|app'
       }, function(error, response, body) {
         expect(response.statusCode).to.equal(200);
         var result = _.isObject(body) ? body : JSON.parse(body);
@@ -306,7 +306,7 @@ describe('ShallowAndChildren', function() {
     it('should return simple list with associated data, including null parent, with NO context.shallow flag and children= EMPTY', function(done) {
 
      request.get({
-        url: test.baseUrl + '/users/?children='
+        url: test.baseUrl + '/users?children='
       }, function(error, response, body) {
         expect(response.statusCode).to.equal(200);
         var result = _.isObject(body) ? body : JSON.parse(body);

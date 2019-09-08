@@ -447,6 +447,21 @@ var userResource = finale.resource({
 });
 ```
 
+### add_to_all on create action
+
+For instance creations -- the create action -- you can provide an add_to_all object to the context.  This can be useful, say, for injecting common attributes from a session, like created_by_user_id.
+
+```
+			finaleResource["create"].write.before(function(req:Request,res:Response,context:any) { 
+				let loggedInUserId =  authManager.getLoggedInUserId(req);
+				context.add_to_all = {
+					updated_by_user_id :  loggedInUserId,
+					created_by_user_id :  loggedInUserId
+				}
+				return context.continue;
+			});
+		}
+```
 
 ### Deep vs Shallow Payloads
 
@@ -595,6 +610,17 @@ for(sub_resource_name in userResource.subResourceNames) {
 The milestone documentation provides many other hooks for finer-grained operations,
 i.e. permitting all users to `list` but only some users to `delete` can be implemented
 by using the same approach described above, with different milestones.
+
+### Tests, Docker, OS X
+
+The test suite requires use of Dtrace, which can be problematic on MacOS/OS X, which limits use of Dtrace.  The base Dockerfile can be used to run tests.
+
+```
+docker build -t finale_test ./
+docker run finale_test
+```
+
+Note: good errors happen, so stacktraces in the output are not necessarily indicative of a problem.
 
 ## License
 

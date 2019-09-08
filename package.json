@@ -1,7 +1,7 @@
 {
   "name": "finale-rest",
   "description": "Create REST resources and controllers with Sequelize and Express or Restify",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "author": "Tom Juszczyk <tomkj4@gmail.com>",
   "contributors": [
     {
@@ -38,10 +38,10 @@
     "api"
   ],
   "dependencies": {
-    "bluebird": "^3.5.5",
-    "inflection": "^1.12.0",
+    "bluebird": "^3.0.0",
+    "inflection": "^1.7.1",
     "lodash": "^4.17.15",
-    "moment": "^2.24.0"
+    "moment": "^2.19.3"
   },
   "devDependencies": {
     "body-parser": "^1.18.3",
@@ -53,7 +53,7 @@
     "request": "^2.88.0",
     "restify": "^4.0.3",
     "sequelize": "^4.44.3",
-    "sqlite3": "^4.1.0"
+    "sqlite3": "^4.0.6"
   },
   "files": [
     "lib"

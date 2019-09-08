@@ -142,6 +142,29 @@ describe('ShallowAndChildren', function() {
       });
     });
 
+    //here we're setting shallow equal to true, but also specifically requesting 
+    //data for the tasks association via url query parameter ?children=tasks
+    it('should return all associated data in same request with no shallow flag but errant empty children parameter', function (done) {
+
+      request.get({
+        url: test.baseUrl + '/users/1?children='
+      }, function (error, response, body) {
+        expect(response.statusCode).to.equal(200);
+        var result = _.isObject(body) ? body : JSON.parse(body);
+        expect(result).to.eql({
+          "app" : null,
+          "app_id": null,
+          "id": 1,
+          "name": "sumo",
+          "tasks": [
+            {id: 1, name: 'eat', user_id: 1},
+            {id: 2, name: 'sleep', user_id: 1},
+            {id: 3, name: 'eat again', user_id: 1}
+          ]
+        });
+        done();
+      });
+    });
 
 
   });
@@ -253,7 +276,7 @@ describe('ShallowAndChildren', function() {
       });
     });
 
-    it('should return simple list with associated data, including null parent, with with shallow flag = true and children=tasks|app', function(done) {
+    it('should return simple list with associated data, including null parent, with shallow flag = true and children=tasks|app', function(done) {
 
       test.resource.list.fetch.before(function(req,res,context) { 
         context.shallow = true;
@@ -262,6 +285,28 @@ describe('ShallowAndChildren', function() {
 
       request.get({
         url: test.baseUrl + '/users/?children=tasks|app'
+      }, function(error, response, body) {
+        expect(response.statusCode).to.equal(200);
+        var result = _.isObject(body) ? body : JSON.parse(body);
+        expect(result).to.eql([
+          {  app: null, app_id: null, id: 1, name: "sumo", tasks: [
+            { id: 1, name: 'eat', user_id: 1 },
+            { id: 3, name: 'eat again', user_id: 1 },
+            { id: 2, name: 'sleep', user_id: 1 },
+          ] },
+          {  app: null,  app_id: null, id: 2, name: "ninja", tasks: [
+            { id: 4, name: 'fight', user_id: 2 },
+          ]},
+        ]);
+
+        done();
+      });
+    });
+
+    it('should return simple list with associated data, including null parent, with NO context.shallow flag and children= EMPTY', function(done) {
+
+     request.get({
+        url: test.baseUrl + '/users/?children='
       }, function(error, response, body) {
         expect(response.statusCode).to.equal(200);
         var result = _.isObject(body) ? body : JSON.parse(body);

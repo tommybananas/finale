@@ -447,21 +447,34 @@ var userResource = finale.resource({
 });
 ```
 
-### add_to_all on create action
+### add_to_children on create and update action
 
-For instance creations -- the create action -- you can provide an add_to_all object to the context.  This can be useful, say, for injecting common attributes from a session, like created_by_user_id.
+For create and update actions, you can provide an `add_to_children` object to the context.  The attributes of `add_to_children` will be added to all nested child objects sent in the request, overriding any values in the body.  This is useful, for example, to inject common attributes from a session, like created_by_user_id or updated_by_user_id, to all children objects in the create body, without having to specify which ones they are specifically.  Note: For doing this for top level writes and updates, you can simply specify `context.attributes` values.  `add_to_children` is just for nested children objects.
 
 ```
-			finaleResource["create"].write.before(function(req:Request,res:Response,context:any) { 
-				let loggedInUserId =  authManager.getLoggedInUserId(req);
-				context.add_to_all = {
-					updated_by_user_id :  loggedInUserId,
-					created_by_user_id :  loggedInUserId
-				}
-				return context.continue;
-			});
-		}
+finaleResource["create"].write.before(function(req:Request,res:Response,context:any) { 
+    let loggedInUserId =  authManager.getLoggedInUserId(req);
+    context.add_to_children = {
+      updated_by_user_id :  loggedInUserId,
+      created_by_user_id :  loggedInUserId
+    }
+    return context.continue;
+  });
+}
+
+finaleResource["update"].write.before(function(req:Request,res:Response,context:any) { 
+    let loggedInUserId =  authManager.getLoggedInUserId(req);
+    context.add_to_children = {
+      updated_by_user_id :  loggedInUserId
+    }
+    return context.continue;
+  });
+}
+
+
 ```
+
+This currently is only supported for one level of nesting. It is not recursive.
 
 ### Deep vs Shallow Payloads
 

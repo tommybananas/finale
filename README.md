@@ -447,6 +447,59 @@ var userResource = finale.resource({
 });
 ```
 
+### add_to_children on create and update action
+
+For create and update actions, you can provide an `add_to_children` object to the context.  The attributes of `add_to_children` will be added to all nested child objects sent in the request, overriding any values in the body.  This is useful, for example, to inject common attributes from a session, like created_by_user_id or updated_by_user_id, to all children objects in the create body, without having to specify which ones they are specifically.  Note: For doing this for top level writes and updates, you can simply specify `context.attributes` values.  `add_to_children` is just for nested children objects.
+
+```
+finaleResource["create"].write.before(function(req:Request,res:Response,context:any) { 
+    let loggedInUserId =  authManager.getLoggedInUserId(req);
+    context.add_to_children = {
+      updated_by_user_id :  loggedInUserId,
+      created_by_user_id :  loggedInUserId
+    }
+    return context.continue;
+  });
+}
+
+finaleResource["update"].write.before(function(req:Request,res:Response,context:any) { 
+    let loggedInUserId =  authManager.getLoggedInUserId(req);
+    context.add_to_children = {
+      updated_by_user_id :  loggedInUserId
+    }
+    return context.continue;
+  });
+}
+
+
+```
+
+This currently is only supported for one level of nesting. It is not recursive.
+
+### Deep vs Shallow Payloads
+
+By default, associations are included in read and list payloads.  For list and read queries, you can set a `shallow` boolean on the context to indicate if you want it to include association child objects or not.  
+```javascript
+userResource["list"].fetch.before(function(req:Request,res:Response,context:any) { 
+    context.shallow = true;
+    return context.continue;
+});
+
+```
+
+For finer-grain control over which children are included on a per-query basis, you can set `context.shallow` to true, and also leverage a `children` query parameter with a pipe-delimited list of associated children to include.  `children` only works if `shallow` is set to true.  The names used in the `children` query parameter are the `as` association names when setting up your sequelize models, or the default created by sequelize.
+
+```javascript
+UserModel.belongsToMany(UserGroupModel), { through: UserGroupRelModel,foreignKey: "user_id" });
+UserModel.belongsTo(OrganizationModel), { as: "PrimaryOrganization", foreignKey: "primary_organization_id" });
+UserModel.belongsToMany(FooModel), { through: FooRelModel,foreignKey: "user_id" });
+...
+GET /user/?children=UserGroups|PrimaryOrganization
+```
+
+
+
+
 ## Finale API
 
 #### initialize()
@@ -543,11 +596,44 @@ or `context.continue`, indicating to finale whether or not to proceed.  Note tha
 in the case where the transaction isn't authorized, finale won't proceed, so it
 is your responsibility to send a response back to the client.
 
+### Protecting sub-resources
+
+When models have assocations between them, to achieve the nested endpoints a la `/user/1/UserGroups`, 
+finale creates sub-resources.  Remember to set authorizations on those sub-resources as well.  To get the sub-resources
+for a particular resource, you can use the string array `subResourceNames` attribute on the resource.  Each name is also
+the name of an attribute on the resource.
+
+```javascript
+userResource.all.auth(function (req, res, context) {
+...
+});
+
+for(sub_resource_name in userResource.subResourceNames) {
+    userResource[sub_resource_name].all.auth(function (req, res, context) {
+      ...
+    });
+}
+```
+
+
+
+
 ### Further Information on Protecting Endpoints
 
 The milestone documentation provides many other hooks for finer-grained operations,
 i.e. permitting all users to `list` but only some users to `delete` can be implemented
 by using the same approach described above, with different milestones.
+
+### Tests, Docker, OS X
+
+The test suite requires use of Dtrace, which can be problematic on MacOS/OS X, which limits use of Dtrace.  The base Dockerfile can be used to run tests.
+
+```
+docker build -t finale_test ./
+docker run finale_test
+```
+
+Note: good errors happen, so stacktraces in the output are not necessarily indicative of a problem.
 
 ## License
 

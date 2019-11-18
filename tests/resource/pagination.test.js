@@ -87,7 +87,7 @@ describe('Resource(pagination)', function() {
   });
 });
 
-describe('Resource(pagination with associated models)', function() {
+describe('Resource(pagination with associated models and grouping)', function() {
   before(function() {
     test.models.User = test.db.define('users', {
       id: { type: test.Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
@@ -135,6 +135,30 @@ describe('Resource(pagination with associated models)', function() {
       timestamps: false
     });
 
+    test.userlist = [
+      { username: 'arthur', email: 'arthur@gmail.com' },
+      { username: 'james', email: 'james@gmail.com' },
+      { username: 'henry', email: 'henry@gmail.com' },
+      { username: 'william', email: 'william@gmail.com' },
+      { username: 'edward', email: 'edward@gmail.com' }
+    ];
+
+    test.hobbylist = [
+      { name: 'reading' },
+      { name: 'bowling' },
+      { name: 'running' },
+      { name: 'swimming' },
+      { name: 'coding' }
+    ];
+    
+    test.profilelist = [
+      { nickname: 'X' },
+      { nickname: 'Z' },
+      { nickname: 'C' },
+      { nickname: 'B' },
+      { nickname: 'A' }
+    ];
+
     return Promise.all([ test.initializeDatabase(), test.initializeServer() ])
       .then(function() {
         rest.initialize({ app: test.app, sequelize: test.Sequelize });
@@ -157,36 +181,20 @@ describe('Resource(pagination with associated models)', function() {
           }
         });
 
-        userResource.list.fetch.before(function(req, res, context) {
-          context.options = {
-            subQuery: false
-          };
-          return context.continue;
-        });
-
-        test.userlist = [
-          { username: 'arthur', email: 'arthur@gmail.com' },
-          { username: 'james', email: 'james@gmail.com' },
-          { username: 'henry', email: 'henry@gmail.com' },
-          { username: 'william', email: 'william@gmail.com' },
-          { username: 'edward', email: 'edward@gmail.com' }
-        ];
-
-        test.hobbylist = [
-          { name: 'reading' },
-          { name: 'bowling' },
-          { name: 'running' },
-          { name: 'swimming' },
-          { name: 'coding' }
+        userResource.attributes = [
+          'username',
+          'id',
+          'email',
+          [test.Sequelize.fn('COUNT', test.Sequelize.col('hobbies.id')), 'hobby_count'],
         ];
         
-        test.profilelist = [
-          { nickname: 'X' },
-          { nickname: 'Z' },
-          { nickname: 'C' },
-          { nickname: 'B' },
-          { nickname: 'A' }
-        ];
+        userResource.list.fetch.before(function(req, res, context) {
+          context.options = {
+            subQuery: false,
+          };
+          context.options.group = ['users.id'];
+          return context.continue;
+        });
 
         return Promise.all([
           test.models.User.bulkCreate(test.userlist),
@@ -222,11 +230,11 @@ describe('Resource(pagination with associated models)', function() {
   it('should list records with associated models', function(done) {
     request.get({ url: test.baseUrl + '/users' }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
-      var records = JSON.parse(body).map(function(r) { delete r.id; return r; });
+      expect(response.headers['content-range']).to.equal('items 0-4/5');
+      var records = JSON.parse(body);
       records.forEach(r => {
         expect(r.profile.nickname).to.be.a('string');
       });
-      expect(response.headers['content-range']).to.equal('items 0-4/5');
       done();
     });
   });
@@ -234,9 +242,25 @@ describe('Resource(pagination with associated models)', function() {
   it('should list the correct number of records when sorting by a nested field', function(done) {
     request.get({ url: test.baseUrl + '/users?sort=profile.nickname' }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
-      //var records = JSON.parse(body).map(function(r) { delete r.id; return r; });
       expect(response.headers['content-range']).to.equal('items 0-4/5');
       done();
     });
   });
+
+  it.only('should allow grouping associated records while maintaining pagination', function(done) {
+    request.get({ url: test.baseUrl + '/users' }, function(err, response, body) {
+      expect(response.statusCode).to.equal(200);
+      expect(response.headers['content-range']).to.equal('items 0-4/5');
+      var records = JSON.parse(body);
+      records.forEach(r => {
+        expect(r.hobby_count).to.equal(5);
+
+        // Notice that the grouping also removes records from the included results
+        // which is expcted.
+        expect(r.hobbies.length).to.equal(1);
+      });
+      done();
+    });
+  });
+
 });

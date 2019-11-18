@@ -190,3 +190,103 @@ describe('Resource(sort)', function() {
     });
   });
 });
+
+describe('Resource(sort on included models)', function() {
+  before(function() {
+    test.models.User = test.db.define('users', {
+      id: { type: test.Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+      username: {
+        type: test.Sequelize.STRING,
+        allowNull: false
+      },
+      email: {
+        type: test.Sequelize.STRING,
+        unique: { msg: 'must be unique' },
+        validate: { isEmail: true }
+      }
+    }, {
+      underscored: true,
+      timestamps: false
+    });
+    test.models.Profile = test.db.define('profile', {
+      id: { type: test.Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+      nickname: { type: test.Sequelize.STRING }
+    }, {
+      underscored: true,
+      timestamps: false
+    });
+    test.models.User.hasOne(test.models.Profile, {
+      as: 'profile',
+    });
+
+    test.userlist = [
+      { username: 'arthur', email: 'arthur@gmail.com' },
+      { username: 'james', email: 'james@gmail.com' },
+      { username: 'henry', email: 'henry@gmail.com' },
+      { username: 'william', email: 'william@gmail.com' },
+      { username: 'edward', email: 'edward@gmail.com' }
+    ];
+    
+    test.profilelist = [
+      { nickname: 'X' },
+      { nickname: 'Z' },
+      { nickname: 'C' },
+      { nickname: 'B' },
+      { nickname: 'A' }
+    ];
+    
+  });
+
+  beforeEach(function() {
+    return Promise.all([ test.initializeDatabase(), test.initializeServer() ])
+      .then(function() {
+
+        rest.initialize({ app: test.app, sequelize: test.Sequelize });
+        test.userResource = rest.resource({
+          model: test.models.User,
+          endpoints: ['/users', '/users/:id'],
+          include: [
+            {
+              model: test.models.Profile,
+              attributes: ['nickname'],
+              as: 'profile',
+            },
+          ],
+          sort: {
+            attributes: ['profile.nickname', 'username'],
+            default: 'username'
+          }
+        });
+
+        return Promise.all([
+          test.models.User.bulkCreate(test.userlist),
+          test.models.Profile.bulkCreate(test.profilelist)
+        ]).then(function(){
+          return Promise.all([
+            test.models.User.findAll(),
+            test.models.Profile.findAll()
+          ]).then(function(results){
+            const users = results[0];
+            const profiles = results[1];
+            return Promise.all(users.map((u, i) => u.setProfile(profiles[i])));
+          });
+        });
+      });
+  });
+
+  afterEach(function() {
+    return test.clearDatabase()
+      .then(function() { return test.closeServer(); });
+  });
+
+  it('should allow sorting by an included model field', function(done) {
+    request.get({ url: test.baseUrl + '/users?sort=profile.nickname' }, function(err, response, body) {
+      expect(response.statusCode).to.equal(200);
+      var records = JSON.parse(body).map(function(r) { delete r.id; return r; });
+      expect(records[0].profile.nickname).to.equal('A');
+      expect(records[4].profile.nickname).to.equal('Z');
+      done();
+    });
+  });
+  
+});

@@ -87,7 +87,7 @@ describe('Resource(pagination)', function() {
   });
 });
 
-describe('Resource(pagination with associated models and grouping)', function() {
+describe('Resource(pagination with included models and grouping)', function() {
   before(function() {
     test.models.User = test.db.define('users', {
       id: { type: test.Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
@@ -247,7 +247,7 @@ describe('Resource(pagination with associated models and grouping)', function() 
     });
   });
 
-  it.only('should allow grouping associated records while maintaining pagination', function(done) {
+  it('should allow grouping associated records while maintaining pagination', function(done) {
     request.get({ url: test.baseUrl + '/users' }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
       expect(response.headers['content-range']).to.equal('items 0-4/5');

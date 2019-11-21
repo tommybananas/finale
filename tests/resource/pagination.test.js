@@ -195,30 +195,6 @@ describe('Resource(pagination with included models and grouping)', function() {
           context.options.group = ['users.id'];
           return context.continue;
         });
-
-        return Promise.all([
-          test.models.User.bulkCreate(test.userlist),
-          test.models.Hobby.bulkCreate(test.hobbylist),
-          test.models.Profile.bulkCreate(test.profilelist)
-        ]).then(function(){
-          return Promise.all([
-            test.models.User.findAll(),
-            test.models.Hobby.findAll(),
-            test.models.Profile.findAll()
-          ]).then(function(results){
-            const users = results[0];
-            const hobbies = results[1];
-            const profiles = results[2];
-            return Promise.all(
-              users.map((u, i) => u.setProfile(profiles[i]))
-            ).then(function(){
-              return Promise.all(
-                users.map((u, i) => u.setHobbies(hobbies))
-              );
-            });
-          });
-        });
-
       });
   });
 
@@ -227,40 +203,71 @@ describe('Resource(pagination with included models and grouping)', function() {
       .then(function() { test.closeServer(); });
   });
 
-  it('should list records with associated models', function(done) {
-    request.get({ url: test.baseUrl + '/users' }, function(err, response, body) {
-      expect(response.statusCode).to.equal(200);
-      expect(response.headers['content-range']).to.equal('items 0-4/5');
-      var records = JSON.parse(body);
-      records.forEach(r => {
-        expect(r.profile.nickname).to.be.a('string');
+  describe('With a few users and hobbies', function() {
+        
+    before(function() {
+      return Promise.all([
+        test.models.User.bulkCreate(test.userlist),
+        test.models.Hobby.bulkCreate(test.hobbylist),
+        test.models.Profile.bulkCreate(test.profilelist)
+      ]).then(function(){
+        return Promise.all([
+          test.models.User.findAll(),
+          test.models.Hobby.findAll(),
+          test.models.Profile.findAll()
+        ]).then(function(results){
+          const users = results[0];
+          const hobbies = results[1];
+          const profiles = results[2];
+          return Promise.all(
+            users.map((u, i) => u.setProfile(profiles[i]))
+          ).then(function(){
+            return Promise.all(
+              users.map((u, i) => u.setHobbies(hobbies))
+            );
+          });
+        });
       });
-      done();
-    });
-  });
-
-  it('should list the correct number of records when sorting by a nested field', function(done) {
-    request.get({ url: test.baseUrl + '/users?sort=profile.nickname' }, function(err, response, body) {
-      expect(response.statusCode).to.equal(200);
-      expect(response.headers['content-range']).to.equal('items 0-4/5');
-      done();
-    });
-  });
-
-  it('should allow grouping associated records while maintaining pagination', function(done) {
-    request.get({ url: test.baseUrl + '/users' }, function(err, response, body) {
-      expect(response.statusCode).to.equal(200);
-      expect(response.headers['content-range']).to.equal('items 0-4/5');
-      var records = JSON.parse(body);
-      records.forEach(r => {
-        expect(r.hobby_count).to.equal(5);
-
-        // Notice that the grouping also removes records from the included results
-        // which is expcted.
-        expect(r.hobbies.length).to.equal(1);
+    });  
+    
+    it('should list records with associated models', function(done) {
+      request.get({ url: test.baseUrl + '/users' }, function(err, response, body) {
+        expect(response.statusCode).to.equal(200);
+        expect(response.headers['content-range']).to.equal('items 0-4/5');
+        var records = JSON.parse(body);
+        records.forEach(r => {
+          expect(r.profile.nickname).to.be.a('string');
+        });
+        done();
       });
-      done();
     });
+  
+    it('should list the correct number of records when sorting by a nested field', function(done) {
+      request.get({ url: test.baseUrl + '/users?sort=profile.nickname' }, function(err, response, body) {
+        expect(response.statusCode).to.equal(200);
+        expect(response.headers['content-range']).to.equal('items 0-4/5');
+        done();
+      });
+    });
+  
+    it('should allow grouping associated records while maintaining pagination', function(done) {
+      
+      request.get({ url: test.baseUrl + '/users' }, function(err, response, body) {
+        expect(response.statusCode).to.equal(200);
+        expect(response.headers['content-range']).to.equal('items 0-4/5');
+        var records = JSON.parse(body);
+        records.forEach(r => {
+          expect(r.hobby_count).to.equal(5);
+  
+          // Notice that the grouping also removes records from the included results
+          // which is expcted.
+          expect(r.hobbies.length).to.equal(1);
+        });
+        done();
+      });
+
+    });
+
   });
 
 });

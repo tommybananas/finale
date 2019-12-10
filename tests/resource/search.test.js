@@ -284,7 +284,8 @@ describe('Resource(search)', function() {
 });
 
 
-describe.only('Resource(search on included models)', function() {
+
+describe('Resource(search on included models)', function() {
   before(function() {
     test.models.User = test.db.define('users', {
       id: { type: test.Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
@@ -393,12 +394,13 @@ describe.only('Resource(search on included models)', function() {
     });
   });
 
-  it.only('should search an included model by query key', function(done) {
+
+  it('should search an included model by query key', function(done) {
     var param = '?profile.nickname=qwerty';
     request.get({ url: test.baseUrl + '/users' + param }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
       var records = JSON.parse(body).map(function(r) { delete r.id; return r; });
-      
+
       // This type of query only works when not using Restify.
       // Restify parses the req.query in the form of 
       // { profile: { nickname: 'querty' } }

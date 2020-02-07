@@ -19,7 +19,7 @@ var TestFixture = {
   initializeServer: function() {
     if (process.env.USE_RESTIFY) {
       TestFixture.server = TestFixture.app = restify.createServer();
-      TestFixture.server.use(restify.queryParser());
+      TestFixture.server.use(restify.queryParser({ allowDots: false }));
       TestFixture.server.use(restify.bodyParser());
     } else {
       TestFixture.app = express();

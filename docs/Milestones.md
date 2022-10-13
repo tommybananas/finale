@@ -59,7 +59,7 @@ Sets context.instance to the data if it is found, otherwise throws a 404 error.
 
 ### write
 
-Deletes the instance from the database and clears context.instance
+Deletes the instance from the database and clears context.instance. Sets context.instance to context.deletedInstance for later use.
 
 ## list
 

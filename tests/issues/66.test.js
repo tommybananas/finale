@@ -44,7 +44,18 @@ describe('issue 66', function() {
       url: test.baseUrl + '/api/entries?substr=ntr'
     }, function(error, response, body) {
       expect(response.statusCode).to.equal(200);
+      expect(JSON.parse(response.body).length).to.equal(1);
       expect(JSON.parse(response.body)[0].name).to.equal('testEntry');
+      done();
+    });
+  });
+
+  it('should not search with wrong substring', function(done) {
+    request.get({
+      url: test.baseUrl + '/api/entries?substr=wntr'
+    }, function(error, response, body) {
+      expect(response.statusCode).to.equal(200);
+      expect(JSON.parse(response.body).length).to.equal(0);
       done();
     });
   });

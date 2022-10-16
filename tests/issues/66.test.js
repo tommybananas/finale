@@ -7,14 +7,11 @@ var Promise = require('bluebird'),
     test = require('../support');
 
 describe('issue 66', function() {
-  let deletedInstance = null;
-
   before(function() {
     test.models.Entry = test.db.define('Entry', { name: test.Sequelize.STRING }, { timestamps: false, });
   });
 
   beforeEach(function() {
-    deletedInstance = null;
     return Promise.all([ test.initializeDatabase(), test.initializeServer() ])
       .then(function() {
         rest.initialize({ app: test.app, sequelize: test.Sequelize });

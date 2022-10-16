@@ -3,10 +3,11 @@
 var Promise = require('bluebird'),
     request = require('request'),
     expect = require('chai').expect,
+    // _ = require('lodash'),
     rest = require('../../lib'),
     test = require('../support');
 
-describe('issue 34', function() {
+describe('issue 66', function() {
   let deletedInstance = null;
 
   before(function() {
@@ -23,14 +24,12 @@ describe('issue 34', function() {
           model: test.models.Entry,
           associations: true,
           attributes: ['name'],
-          endpoints: ['/api/entries', '/api/entries/:name']
-        });
-
-        test.entryResource.use({
-          delete: { write: { after: (req, res, context) => {
-            deletedInstance = context.deletedInstance;
-            return context.continue;
-          }}}
+          endpoints: ['/api/entries', '/api/entries/:name'],
+          search: {
+            operator: test.Sequelize.Op.substring, 
+            param: 'substr', 
+            attributes: ['name']
+          },
         });
 
         return Promise.all([
@@ -44,12 +43,12 @@ describe('issue 34', function() {
       .then(function() { return test.closeServer(); });
   });
 
-  it('should set deletedInstance', function(done) {
-    request.delete({
-      url: test.baseUrl + '/api/entries/testEntry'
+  it('should search with substring', function(done) {
+    request.get({
+      url: test.baseUrl + '/api/entries?substr=ntr'
     }, function(error, response, body) {
       expect(response.statusCode).to.equal(200);
-      expect(deletedInstance).to.be.an('object');
+      expect(JSON.parse(response.body)[0].name).to.equal('testEntry');
       done();
     });
   });

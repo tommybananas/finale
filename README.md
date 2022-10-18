@@ -1,9 +1,5 @@
 [![Build Status](https://travis-ci.org/tommybananas/finale.svg?branch=master)](https://travis-ci.org/tommybananas/finale) [![Dependency Status](https://david-dm.org/tommybananas/finale.svg)](https://david-dm.org/tommybananas/finale)
 
-## Looking for Maintainers
-
-I no longer have time to keep up with this project. Please let me know if you're interested in becoming a maintainer. www. tomj. ninja
-
 # Finale
 
 Create flexible REST endpoints and controllers from [Sequelize](http://www.sequelizejs.com/) models in your [Express](http://expressjs.com/) or [Restify](https://github.com/restify/node-restify) app.

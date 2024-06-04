@@ -53,7 +53,7 @@
     "express": "^4.18.2",
     "istanbul": "^0.4.0",
     "jshint": "^2.13.5",
-    "mocha": "^5.2.0",
+    "mocha": "^10.2.0",
     "request": "^2.88.2",
     "restify": "^4.3.4",
     "sequelize": "^4.44.4",
